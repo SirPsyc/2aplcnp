@@ -1,9 +1,3 @@
-beliefs:
-  id(0).
-
-beliefupdates:
-{ id(X) }   Increment()    { not id(X), id(X+1)}
-  
 pcrules:
     /* if offer is accepted, return done */
     message( AGENT, inform, La, On, winner(ID, SUCCESS, PC)) <- true |
