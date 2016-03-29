@@ -182,7 +182,7 @@ motherboard(intel,
 micro_atx, 
 ['Celeron', 'Pentium 4'], 
 9.61 * 9.61, 
-145).
+94).
 
 
 
@@ -196,7 +196,7 @@ graphic_card(sigma,
 'Sigma Design REALmagic Xcard',
 'MPEG Card', 
 pci_interface,
-110).
+98).
 
 graphic_card(radeon, 
 'ATI RADEON 7000 Graphics card',

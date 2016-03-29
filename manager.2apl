@@ -1,5 +1,7 @@
 goals:
-wants(pc(1, 'dsaf', 'Intel Desktop Board D865PERL', 'Intel Pentium 4', 'ATI RADEON 7000 Graphics card')).
+wants(pc(1, 'Antec Cases SONATA Mid Tower Case', 'Intel Desktop Board D865PERL', 'Intel Pentium 4', 'ATI RADEON 7000 Graphics card')).
+wants(pc(1, 'Antec Performance II SX630II', 'Intel Desktop Board D865GLC', 'Compaq Pentium III', 'Sigma Design REALmagic Xcard')).
+wants(pc(1, 'Non Existant PC', 'Intel Desktop Board D865GLC', 'Compaq Pentium III', 'Sigma Design REALmagic Xcard')).
 
 beliefs:
   id(0).
@@ -7,74 +9,102 @@ beliefs:
 
 beliefupdates:
 { id(X) }   Increment()    { not id(X), id(X+1)}
-{ not bid(Id, Cont, _), bidsReceived(Id, X) }    AddBid(Id, Cont, Price) {bid(Id, Cont, Price), not bidsReceived(Id, X), bidsReceived(Id, X+1)}
+{ bids(Id, LIST), bidsReceived(Id, X) }    AddBid(Id, Cont, Price) {bids(Id, [bid(Cont, Price)|LIST]), not bids(Id,LIST), not bidsReceived(Id, X), bidsReceived(Id, X+1)}
   
 pcrules:
     message( AGENT , inform, La, On, bid(ID, PRICE)) <- true |
     {   
+        /* add bid to list of bids and count amount of bids */
         AddBid(ID, AGENT, PRICE);
-        if(PRICE > 0)
+    }
+    message( AGENT, inform, La, On, done(ID, SUCCESS, PC)) <- true |
+    {
+        if(SUCCESS = 1)
         {
-            if (lowestBid(ID, bid(LCN, LPR)))
-            {
-                if(LPR > PRICE)
-                {
-                    -lowestBid(ID,bid(LCN,LPR));
-                    +lowestBid(ID,bid(AGENT, PRICE));
-                }
-            }
-            else
-            {
-                +lowestBid(ID, bid(AGENT, PRICE));
-            }
+            /* succesfully bought a pc */
+            dropgoal(wants(PC));
+        }
+        else
+        {
+            /* no deal, try again*/
+            -contractSent(ID);
+            -acceptSent(ID);
         }
     }
-    message( AGENT, inform, La, On, done(id, success, pc)) <- true |
+    agree(ID, PC) <- true |
     {
-        dropgoal(wants(pc));
-    }
-    agree(ID) <- true |
-    {
+        /* find lowest bid and send message to contractors */
+        B(bids(ID, LIST));
+        getLowestBid(ID, LIST);
         if (B(lowestBid(ID, bid(LCN, LPR))))
         {
             if(LCN = 'contractor1')
             {
-                send(contractor1, inform, winner(ID, 1));
-                send(contractor2, inform, winner(ID, 0));
-                send(contractor3, inform, winner(ID, 0));
+                send(contractor1, inform, winner(ID, 1, PC));
+                send(contractor2, inform, winner(ID, 0, PC));
+                send(contractor3, inform, winner(ID, 0, PC));
             }
             if(LCN = 'contractor2')
             {
-                send(contractor1, inform, winner(ID, 0));
-                send(contractor2, inform, winner(ID, 1));
-                send(contractor3, inform, winner(ID, 0));
+                send(contractor1, inform, winner(ID, 0, PC));
+                send(contractor2, inform, winner(ID, 1, PC));
+                send(contractor3, inform, winner(ID, 0, PC));
             }
             if(LCN = 'contractor3')
             {
-                send(contractor1, inform, winner(ID, 0));
-                send(contractor2, inform, winner(ID, 0));
-                send(contractor3, inform, winner(ID, 1));
+                send(contractor1, inform, winner(ID, 0, PC));
+                send(contractor2, inform, winner(ID, 0, PC));
+                send(contractor3, inform, winner(ID, 1, PC));
             }
         }
-    }
-    
-pgrules:
-    wants(PC) <- not contractSend(X, PC) |
-    {
-        if B(id(X)) then
+        else 
         {
-            +bidsReceived(X, 0);
-            send(contractor2, inform, wanted(X, PC));
-            send(contractor3, inform, wanted(X, PC));
-            send(contractor1, inform, wanted(X, PC));
-            +contractSend(X, PC);
-            Increment();
+            dropgoal(wants(PC));
         }
     }
-    wants(PC) <- contractSend(X, PC) and bidsReceived(X, N) and numberOfContractors(N) |
+    getLowestBid(ID, [bid(C,P)|LIST]) <- true |
     {
-        agree(X);
-        dropgoal(wants(PC));
+        /* find lowest bid */
+        if(P >= 0)
+        {
+            if (lowestBid(ID, bid(LCN, LPR)))
+            {
+                if(LPR > P)
+                {
+                    -lowestBid(ID,bid(LCN,LPR));
+                    +lowestBid(ID,bid(C, P));
+                }
+            }
+            else
+            {
+                +lowestBid(ID, bid(C, P));
+            }
+        }
+        if(not LIST = [])
+            getLowestBid(ID, LIST);
+    }
+    
+    
+pgrules:
+    wants(PC) <- not contractSent(X, PC) |
+    {
+        /* if not yet sent a contract, send one */
+        if B(id(X)) then
+        {
+            Increment();
+            +bidsReceived(X, 0);
+            +bids(X,[]);
+            send(contractor1, inform, wanted(X, PC));
+            send(contractor2, inform, wanted(X, PC));
+            send(contractor3, inform, wanted(X, PC));
+            +contractSent(X, PC);
+        }
+    }
+    wants(PC) <- contractSent(X, PC) and bidsReceived(X, N) and numberOfContractors(N) and not acceptSent(X)|
+    {
+        /* if received all offers and not sent an agreement, agree with one (or none) */
+        +acceptSent(X);
+        agree(X, PC);
     }
     
 prrules:

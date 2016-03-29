@@ -5,18 +5,15 @@ beliefupdates:
 { id(X) }   Increment()    { not id(X), id(X+1)}
   
 pcrules:
-    message( AGENT , inform, La, On, doBid(ID, PRICE)) <- true |
+    /* if offer is accepted, return done */
+    message( AGENT, inform, La, On, winner(ID, SUCCESS, PC)) <- true |
     {
-        send(manager, inform, bid(ID, PRICE));
+        if(SUCCESS = 1)
+        {
+            send(manager, inform, done(ID, 1, PC));
+        }
     }
-    message( AGENT , inform, La, On, bid(id, price)) <- true |
-    {   
-        Increment();
-    }
-    message( AGENT, inform, La, On, done(id, success, pc)) <- true |
-    {
-        Increment();
-    }
+    /* check belief for exact pc */
 	message( AGENT, inform, La, On, wanted(ID, pc(AMOUNT, CASE, MOTHERBOARD, PROCESSOR, GRAPHICS))) <- true |
 	{
 		if (B(pc_case(_, CASE, _, _, _, _, _, CASEPRICE)))
