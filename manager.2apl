@@ -1,5 +1,5 @@
 goals:
-wants(pc(1, 'Antec Performance II SX835II', 'Intel Desktop Board D865PERL', 'Intel Pentium 4', 'ATI RADEON 7000 Graphics card')).
+wants(pc(1, 'dsaf', 'Intel Desktop Board D865PERL', 'Intel Pentium 4', 'ATI RADEON 7000 Graphics card')).
 
 beliefs:
   id(0).
@@ -13,17 +13,20 @@ pcrules:
     message( AGENT , inform, La, On, bid(ID, PRICE)) <- true |
     {   
         AddBid(ID, AGENT, PRICE);
-        if (lowestBid(ID, bid(LCN, LPR)))
+        if(PRICE > 0)
         {
-            if(LPR > PRICE)
+            if (lowestBid(ID, bid(LCN, LPR)))
             {
-                -lowestBid(ID,bid(LCN,LPR));
-                +lowestBid(ID,bid(AGENT, PRICE));
+                if(LPR > PRICE)
+                {
+                    -lowestBid(ID,bid(LCN,LPR));
+                    +lowestBid(ID,bid(AGENT, PRICE));
+                }
             }
-        }
-        else
-        {
-            +lowestBid(ID, bid(ID, AGENT, PRICE));
+            else
+            {
+                +lowestBid(ID, bid(AGENT, PRICE));
+            }
         }
     }
     message( AGENT, inform, La, On, done(id, success, pc)) <- true |
@@ -32,9 +35,27 @@ pcrules:
     }
     agree(ID) <- true |
     {
-        send(contractor1, inform, winner(ID, 1));
-        send(contractor2, inform, winner(ID, 0));
-        send(contractor3, inform, winner(ID, 0));
+        if (B(lowestBid(ID, bid(LCN, LPR))))
+        {
+            if(LCN = 'contractor1')
+            {
+                send(contractor1, inform, winner(ID, 1));
+                send(contractor2, inform, winner(ID, 0));
+                send(contractor3, inform, winner(ID, 0));
+            }
+            if(LCN = 'contractor2')
+            {
+                send(contractor1, inform, winner(ID, 0));
+                send(contractor2, inform, winner(ID, 1));
+                send(contractor3, inform, winner(ID, 0));
+            }
+            if(LCN = 'contractor3')
+            {
+                send(contractor1, inform, winner(ID, 0));
+                send(contractor2, inform, winner(ID, 0));
+                send(contractor3, inform, winner(ID, 1));
+            }
+        }
     }
     
 pgrules:
@@ -42,11 +63,11 @@ pgrules:
     {
         if B(id(X)) then
         {
+            +bidsReceived(X, 0);
             send(contractor2, inform, wanted(X, PC));
             send(contractor3, inform, wanted(X, PC));
             send(contractor1, inform, wanted(X, PC));
             +contractSend(X, PC);
-            +bidsReceived(X, 0);
             Increment();
         }
     }
