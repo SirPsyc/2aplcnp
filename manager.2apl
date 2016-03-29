@@ -3,7 +3,7 @@ wants(pc(1, 'Antec Performance II SX835II', 'Intel Desktop Board D865PERL', 'Int
 
 beliefs:
   id(0).
-  allbids(ID) :- bid(ID, 'contractor1', p1), bid(ID, 'contractor2', p2), bid(ID, 'contractor3', p3).
+  numberOfContractors(3).
 
 beliefupdates:
 { id(X) }   Increment()    { not id(X), id(X+1)}
@@ -13,6 +13,18 @@ pcrules:
     message( AGENT , inform, La, On, bid(ID, PRICE)) <- true |
     {   
         AddBid(ID, AGENT, PRICE);
+        if (lowestBid(ID, bid(LCN, LPR)))
+        {
+            if(LPR > PRICE)
+            {
+                -lowestBid(ID,bid(LCN,LPR));
+                +lowestBid(ID,bid(AGENT, PRICE));
+            }
+        }
+        else
+        {
+            +lowestBid(ID, bid(ID, AGENT, PRICE));
+        }
     }
     message( AGENT, inform, La, On, done(id, success, pc)) <- true |
     {
@@ -38,7 +50,7 @@ pgrules:
             Increment();
         }
     }
-    wants(PC) <- contractSend(X, PC) and bidsReceived(X, 3) |
+    wants(PC) <- contractSend(X, PC) and bidsReceived(X, N) and numberOfContractors(N) |
     {
         agree(X);
         dropgoal(wants(PC));
