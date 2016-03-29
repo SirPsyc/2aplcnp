@@ -13,7 +13,7 @@ pcrules:
             send(manager, inform, done(ID, 1, PC));
         }
     }
-    /* check belief for exact pc */
+    /* check belief for exact pc and send total price to manager */
 	message( AGENT, inform, La, On, wanted(ID, pc(AMOUNT, CASE, MOTHERBOARD, PROCESSOR, GRAPHICS))) <- true |
 	{
 		if (B(pc_case(_, CASE, _, _, _, _, _, CASEPRICE)))
@@ -27,7 +27,8 @@ pcrules:
 						B(is(PRICE, (CASEPRICE+PROCPRICE+MOBOPRICE+GRFXPRICE)));
 						send(manager, inform, bid(ID, PRICE));
 					}
-					else
+					/* if one of the components can't be found return a -1 as price to manager */
+					else 
 						send(manager, inform, bid(ID, -1));
 				}
 				else
