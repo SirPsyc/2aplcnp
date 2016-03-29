@@ -5,6 +5,10 @@ beliefupdates:
 { id(X) }   Increment()    { not id(X), id(X+1)}
   
 pcrules:
+    message( AGENT , inform, La, On, doBid(ID, PRICE)) <- true |
+    {
+        send(manager, inform, bid(ID, PRICE));
+    }
     message( AGENT , inform, La, On, bid(id, price)) <- true |
     {   
         Increment();
@@ -13,3 +17,16 @@ pcrules:
     {
         Increment();
     }
+	message( AGENT, inform, La, On, wanted(id, pc(AMOUNT, CASE, MOTHERBOARD, PROCESSOR, GRAPHICS))) <- true |
+	{
+		if (B(pc_case(_, CASE, _, _, _, _, _, CASEPRICE)))
+        {
+            if B(CASEPRICE = 0)
+                Increment();
+        }
+        else
+        {
+            Increment();
+        }
+        
+	}

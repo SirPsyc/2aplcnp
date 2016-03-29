@@ -1,0 +1,50 @@
+goals:
+wants(pc).
+
+beliefs:
+  id(0).
+  allbids(ID) :- bid(ID, 'contractor1', p1), bid(ID, 'contractor2', p2), bid(ID, 'contractor3', p3).
+
+beliefupdates:
+{ id(X) }   Increment()    { not id(X), id(X+1)}
+{ not bid(Id, Cont, _), bidsReceived(X) }    AddBid(Id, Cont, Price) {bid(Id, Cont, Price), not bidsReceived(X), bidsReceived(X+1)}
+  
+pcrules:
+    message( AGENT , inform, La, On, bid(ID, PRICE)) <- true |
+    {   
+        AddBid(ID, AGENT, PRICE);
+    }
+    message( AGENT, inform, La, On, done(id, success, pc)) <- true |
+    {
+        dropgoal(wants(pc));
+    }
+    agree(ID) <- true |
+    {
+        send(contractor1, inform, winner(ID, 1));
+        send(contractor2, inform, winner(ID, 0));
+        send(contractor3, inform, winner(ID, 0));
+    }
+    
+pgrules:
+    wants(PC) <- not contractSend(X, PC) |
+    {
+        if B(id(X)) then
+        {
+            send(contractor2, inform, wanted(X, PC));
+            send(contractor3, inform, wanted(X, PC));
+            send(contractor1, inform, wanted(X, PC));
+            +contractSend(X, PC);
+            +bidsReceived(X, 0);
+            Increment();
+        }
+    }
+    wants(PC) <- contractSend(X, PC) and bidsReceived(X, 3) |
+    {
+        agree(X);
+    }
+    
+prrules:
+    AddBid(_,_,_); REST; <- true |
+    {
+        REST;
+    }
