@@ -1,0 +1,15 @@
+beliefs:
+  id(0).
+
+beliefupdates:
+{ id(X) }   Increment()    { not id(X), id(X+1)}
+  
+pcrules:
+    message( AGENT , inform, La, On, bid(id, price)) <- true |
+    {   
+        Increment();
+    }
+    message( AGENT, inform, La, On, done(id, success, pc)) <- true |
+    {
+        Increment();
+    }
