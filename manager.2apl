@@ -1,5 +1,5 @@
 goals:
-wants(pc).
+wants(pc(1, 'Antec Performance II SX835II', 'Intel Desktop Board D865PERL', 'Intel Pentium 4', 'ATI RADEON 7000 Graphics card')).
 
 beliefs:
   id(0).
@@ -7,7 +7,7 @@ beliefs:
 
 beliefupdates:
 { id(X) }   Increment()    { not id(X), id(X+1)}
-{ not bid(Id, Cont, _), bidsReceived(X) }    AddBid(Id, Cont, Price) {bid(Id, Cont, Price), not bidsReceived(X), bidsReceived(X+1)}
+{ not bid(Id, Cont, _), bidsReceived(Id, X) }    AddBid(Id, Cont, Price) {bid(Id, Cont, Price), not bidsReceived(Id, X), bidsReceived(Id, X+1)}
   
 pcrules:
     message( AGENT , inform, La, On, bid(ID, PRICE)) <- true |
@@ -41,6 +41,7 @@ pgrules:
     wants(PC) <- contractSend(X, PC) and bidsReceived(X, 3) |
     {
         agree(X);
+        dropgoal(wants(PC));
     }
     
 prrules:
