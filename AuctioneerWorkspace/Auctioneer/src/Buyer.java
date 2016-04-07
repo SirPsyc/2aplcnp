@@ -3,6 +3,8 @@ import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.core.behaviours.*;
+import jade.lang.acl.*;
 
 public class Buyer extends Agent{
 	protected void setup(){
@@ -17,5 +19,18 @@ public class Buyer extends Agent{
 	        DFService.register(this, dfd );  
 	    }
 	    catch (FIPAException fe) { fe.printStackTrace(); }
+	    
+	    addBehaviour(new CyclicBehaviour(this) 
+        {
+             public void action() 
+             {
+                ACLMessage msg= receive();
+                if (msg != null)
+                    System.out.println( " - " +
+                       getLocalName() + " <- " +
+                       msg.getContent() );
+                block();
+             }
+        });
 	}
 }
