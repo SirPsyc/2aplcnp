@@ -45,6 +45,11 @@ public class Buyer extends Agent{
                         bid.setContent( "" + maximumPrice );
                         bid.addReceiver(auctioneer);
                         send(bid);
+                        System.out.println( " - " +
+                                getLocalName() + " <- " +
+                        		maximumPrice +
+                                " sent bid to " +
+                                auctioneer.getLocalName());
                     }
                     else if (msg.getContent() == "Startenglish")
                     {
@@ -71,11 +76,11 @@ public class Buyer extends Agent{
                     }
                     else if (msg.getContent() == "Auctionwon")
                     {
-                    	System.out.println( "NICE!, i won for " /*+ price*/ );
+                    	//System.out.println( "NICE!, i won for " /*+ price*/ );
                     }
                     else if (msg.getContent() == "Auctionlost")
                     {
-                    	System.out.println( "THOUSANDS OF BOMBS AND GRENADES!, i lost" );
+                    	//System.out.println( "THOUSANDS OF BOMBS AND GRENADES!, i lost" );
                     }
                 }
                 block();
