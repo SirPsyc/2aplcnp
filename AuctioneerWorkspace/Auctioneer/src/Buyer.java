@@ -56,6 +56,7 @@ public class Buyer extends Agent{
                     //In case of start English auction send back a first bid between $1 and $10
                     else if (msg.getContent().equals("Startenglish"))
                     {
+                    	System.out.println(getLocalName() + " Ready!");
                     	int firstBid = rand.nextInt(10) + 1;
                     	ACLMessage bid = new ACLMessage(ACLMessage.INFORM);
                         bid.setContent( "" + firstBid );
@@ -65,6 +66,7 @@ public class Buyer extends Agent{
                     //In case of start Dutch auction send back a message bidder is ready to start
                     else if (msg.getContent().equals("Startdutch"))
                     {
+                    	System.out.println(getLocalName() + " Ready!");
                     	ACLMessage rdym = new ACLMessage(ACLMessage.INFORM);
                         rdym.setContent( "ready" );
                         rdym.addReceiver(auctioneer);
