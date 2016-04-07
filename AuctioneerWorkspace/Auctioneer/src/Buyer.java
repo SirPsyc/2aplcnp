@@ -27,7 +27,7 @@ public class Buyer extends Agent{
         {
              public void action() 
              {
-                ACLMessage msg= receive();
+                ACLMessage msg = receive();
                 if (msg != null)
                 {
                     System.out.println( " - " +
