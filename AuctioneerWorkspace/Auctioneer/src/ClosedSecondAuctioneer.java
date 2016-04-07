@@ -29,7 +29,7 @@ public class ClosedSecondAuctioneer extends Auctioneer{
 	protected void startAuction()
 	{
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-        msg.setContent( "Startbid" );
+        msg.setContent( "Startsecond" );
         for(DFAgentDescription b : buyers)
         {
         	msg.addReceiver(b.getName());

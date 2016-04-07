@@ -15,6 +15,9 @@ public class Buyer extends Agent{
 	    sd.setName( getLocalName() );
 	    dfd.addServices(sd);
 	    
+	    Object[] args = getArguments();
+	    int maximumPrice = Integer.parseInt(args[0].toString());
+	    
 	    try {  
 	        DFService.register(this, dfd );  
 	    }
@@ -26,9 +29,29 @@ public class Buyer extends Agent{
              {
                 ACLMessage msg= receive();
                 if (msg != null)
+                {
                     System.out.println( " - " +
                        getLocalName() + " <- " +
                        msg.getContent() );
+                    
+                    AID auctioneer = msg.getSender();
+                    
+                    if (msg.getContent() == "Startsecond")
+                    {
+                    	ACLMessage bid = new ACLMessage(ACLMessage.INFORM);
+                        bid.setContent( "" + maximumPrice );
+                        bid.addReceiver(auctioneer);
+                        send(bid);
+                    }
+                    else if (msg.getContent() == "Startenglish")
+                    {
+                    	
+                    }
+                    else if (msg.getContent() == "Startdutch")
+                    {
+                    	
+                    }
+                }
                 block();
              }
         });
