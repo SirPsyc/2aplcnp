@@ -16,15 +16,14 @@ public class ClosedSecondAuctioneer extends Auctioneer{
 	private Integer numAgents;
 	
 	protected void setup(){
-		//TODO
-		//discover agents
-		//let them bid
-		//give highest bidder the second highest price.
+		//register with DFService
 		register();
 		
+		//get amount of agents participating in the auction
 		Object[] args = getArguments();
 		numAgents = Integer.parseInt(args[0].toString());
         
+		//get all buyers AID for messaging
         buyers = getBuyers();
         for(DFAgentDescription b : buyers)
         {
@@ -33,6 +32,9 @@ public class ClosedSecondAuctioneer extends Auctioneer{
         startAuction();
 	}
 	
+	/*
+	 * Start the auction, by messaging all agents to give their bid.
+	 */
 	protected void startAuction()
 	{
 		bids = new TreeMap<Integer,AID>(Collections.reverseOrder());
@@ -46,6 +48,10 @@ public class ClosedSecondAuctioneer extends Auctioneer{
         send(msg);
 	}
 	
+	/*
+	 * Receive the bids
+	 * If all bids are in getWinner()
+	 */
 	protected void receiveBids()
 	{
 		addBehaviour(new CyclicBehaviour(this) 
@@ -65,6 +71,10 @@ public class ClosedSecondAuctioneer extends Auctioneer{
         });
 	}
 	
+	/*
+	 * Get the highest bidder and the second highest price
+	 * Message the winner with the amount.
+	 */
 	protected void getWinner()
 	{
 		AID winner = bids.remove(bids.firstKey());
