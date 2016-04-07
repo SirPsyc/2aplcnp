@@ -24,13 +24,23 @@ public class Buyer extends Agent{
         {
              public void action() 
              {
-                ACLMessage msg= receive();
+                ACLMessage msg = receive();
                 if (msg != null)
+                {
+                	if (msg.getContent() == "Startbid")
+                	{
+                		doBid();
+                	}
+                }
                     System.out.println( " - " +
                        getLocalName() + " <- " +
                        msg.getContent() );
                 block();
              }
         });
+	}
+	
+	protected void doBid()
+	{
 	}
 }

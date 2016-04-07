@@ -18,7 +18,7 @@ public class Auctioneer extends Agent {
         }
         catch (FIPAException fe) { fe.printStackTrace(); }
 	}
-	protected DFAgentDescription[] getBuyers(int n){
+	protected DFAgentDescription[] getBuyers(){
 		DFAgentDescription dfd = new DFAgentDescription();
         ServiceDescription sd  = new ServiceDescription();
         sd.setType( "buyer" );
