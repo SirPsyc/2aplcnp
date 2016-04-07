@@ -1,0 +1,35 @@
+pcrules:
+    /* if offer is accepted, return done */
+    message( AGENT, inform, La, On, winner(ID, SUCCESS, PC)) <- true |
+    {
+        if(SUCCESS = 1)
+        {
+            send(manager, inform, done(ID, 1, PC));
+        }
+    }
+    /* check belief for exact pc */
+	message( AGENT, inform, La, On, wanted(ID, pc(AMOUNT, CASE, MOTHERBOARD, PROCESSOR, GRAPHICS))) <- true |
+	{
+		if (B(pc_case(_, CASE, _, _, _, _, _, CASEPRICE)))
+		{
+			if (B(motherboard(_, MOTHERBOARD, _, _, _, _, MOBOPRICE)))
+			{
+				if (B(processor(_, PROCESSOR, _, _, _, PROCPRICE)))
+				{
+					if (B(graphic_card(_, GRAPHICS, _, _, GRFXPRICE)))
+					{
+						B(is(PRICE, (CASEPRICE+PROCPRICE+MOBOPRICE+GRFXPRICE)));
+						send(manager, inform, bid(ID, PRICE));
+					}
+					else
+						send(manager, inform, bid(ID, -1));
+				}
+				else
+					send(manager, inform, bid(ID, -1));
+			}
+			else
+				send(manager, inform, bid(ID, -1));
+		}
+		else
+			send(manager, inform, bid(ID, -1));
+	}

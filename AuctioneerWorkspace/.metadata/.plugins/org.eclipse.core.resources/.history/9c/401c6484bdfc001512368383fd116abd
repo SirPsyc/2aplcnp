@@ -1,9 +1,0 @@
-import jade.core.*;
-import jade.domain.DFService;
-import jade.domain.FIPAAgentManagement.*;
-import jade.domain.FIPAException;
-
-
-public class ClosedSecondAuctioneer extends Auctioneer{
-
-}
