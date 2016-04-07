@@ -48,7 +48,7 @@ public class Buyer extends Agent{
                         bid.addReceiver(auctioneer);
                         send(bid);
                         System.out.println( " - " +
-                                getLocalName() + " <- " +
+                                getLocalName() + " : " +
                         		maximumPrice +
                                 " sent bid to " +
                                 auctioneer.getLocalName());
@@ -65,26 +65,29 @@ public class Buyer extends Agent{
                     //In case of start Dutch auction send back a message bidder is ready to start
                     else if (msg.getContent().equals("Startdutch"))
                     {
-                    	ACLMessage bid = new ACLMessage(ACLMessage.INFORM);
-                        bid.setContent( "ready" );
-                        bid.addReceiver(auctioneer);
-                        send(bid);
+                    	ACLMessage rdym = new ACLMessage(ACLMessage.INFORM);
+                        rdym.setContent( "ready" );
+                        rdym.addReceiver(auctioneer);
+                        send(rdym);
                     }
                     //Receiving the current bid of the English auction, 
-                    //if current bid is lower than bidder maximum send a new bid which is
-                    //the current bid with a random added value of $1 to $5,
+                    //if current bid is lower than bidder maximum send a new bid
+                    //new bid is the current bid with a random added value of $1 to $5,
                     //unless this new bid is higher than maximum in which case send maximum as bid
                     else if (msg.getContent().startsWith("Currentenglish"))
                     {
-                    	int currentBid = Integer.parseInt(msg.getContent().substring(10));
+                    	int currentBid = Integer.parseInt(msg.getContent().substring(14));
                     	
-                    	
+                    	if (currentBid < maximumPrice)
+                    	{
+                    		int newBid = 
+                    	}
                     }
                     //Receiving the current price of the Dutch auction,
                     //if current price lower than bidder maximum send "agreed"
                     else if (msg.getContent().startsWith("Currentdutch"))
                     {
-                    	int currentPrice = Integer.parseInt(msg.getContent().substring(10));
+                    	int currentPrice = Integer.parseInt(msg.getContent().substring(12));
                     	
                     	
                     }
@@ -96,7 +99,8 @@ public class Buyer extends Agent{
                     	System.out.println( " - " + getLocalName() + " : NICE!, i won for $" + price );
                     }
                 }
-                block();
+                else
+                	block();
              }
         });
 	}
