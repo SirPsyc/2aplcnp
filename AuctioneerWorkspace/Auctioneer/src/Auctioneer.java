@@ -4,6 +4,9 @@ import jade.domain.FIPAAgentManagement.*;
 import jade.domain.FIPAException;
 
 public class Auctioneer extends Agent {
+	/*
+	 * Register with the DFA.
+	 */
 	protected void register()
 	{
 	 	DFAgentDescription dfd = new DFAgentDescription();
@@ -18,6 +21,9 @@ public class Auctioneer extends Agent {
         }
         catch (FIPAException fe) { fe.printStackTrace(); }
 	}
+	/*
+	 * Get all agents with type buyer.
+	 */
 	protected DFAgentDescription[] getBuyers(){
 		DFAgentDescription dfd = new DFAgentDescription();
         ServiceDescription sd  = new ServiceDescription();
