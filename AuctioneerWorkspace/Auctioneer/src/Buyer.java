@@ -26,6 +26,7 @@ public class Buyer extends Agent{
 	    
 	    Random rand = new Random();
 	    
+	    // Keep looking for new messages
 	    addBehaviour(new CyclicBehaviour(this) 
         {
              public void action() 
@@ -39,6 +40,7 @@ public class Buyer extends Agent{
                     
                     AID auctioneer = msg.getSender();
                     
+                    //In case of start second price sealed auction send back maximum price of bidder
                     if (msg.getContent().equals("Startsecond"))
                     {
                     	ACLMessage bid = new ACLMessage(ACLMessage.INFORM);
@@ -51,6 +53,7 @@ public class Buyer extends Agent{
                                 " sent bid to " +
                                 auctioneer.getLocalName());
                     }
+                    //In case of start English auction send back a first bid between $1 and $10
                     else if (msg.getContent().equals("Startenglish"))
                     {
                     	int firstBid = rand.nextInt(10) + 1;
@@ -59,6 +62,7 @@ public class Buyer extends Agent{
                         bid.addReceiver(auctioneer);
                         send(bid);
                     }
+                    //In case of start Dutch auction send back a message bidder is ready to start
                     else if (msg.getContent().equals("Startdutch"))
                     {
                     	ACLMessage bid = new ACLMessage(ACLMessage.INFORM);
@@ -66,22 +70,30 @@ public class Buyer extends Agent{
                         bid.addReceiver(auctioneer);
                         send(bid);
                     }
+                    //Receiving the current bid of the English auction, 
+                    //if current bid is lower than bidder maximum send a new bid which is
+                    //the current bid with a random added value of $1 to $5,
+                    //unless this new bid is higher than maximum in which case send maximum as bid
                     else if (msg.getContent().startsWith("Currentenglish"))
                     {
+                    	int currentBid = Integer.parseInt(msg.getContent().substring(10));
+                    	
                     	
                     }
+                    //Receiving the current price of the Dutch auction,
+                    //if current price lower than bidder maximum send "agreed"
                     else if (msg.getContent().startsWith("Currentdutch"))
                     {
+                    	int currentPrice = Integer.parseInt(msg.getContent().substring(10));
+                    	
                     	
                     }
+                    //Receiving message of having won the auction for a certain price,
+                    //print out a line saying I WON :D
                     else if (msg.getContent().startsWith("Auctionwon"))
                     {
                     	int price = Integer.parseInt(msg.getContent().substring(10));
                     	System.out.println( " - " + getLocalName() + " : NICE!, i won for $" + price );
-                    }
-                    else if (msg.getContent().equals("Auctionlost"))
-                    {
-                    	//System.out.println( "THOUSANDS OF BOMBS AND GRENADES!, i lost" );
                     }
                 }
                 block();
