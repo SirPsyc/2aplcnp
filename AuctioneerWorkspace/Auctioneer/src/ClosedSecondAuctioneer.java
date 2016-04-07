@@ -1,4 +1,5 @@
-import java.util.HashMap;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import jade.core.*;
 import jade.core.behaviours.CyclicBehaviour;
@@ -10,7 +11,7 @@ import jade.domain.FIPAException;
 
 public class ClosedSecondAuctioneer extends Auctioneer{
 	private DFAgentDescription[] buyers;
-	private HashMap<String, Integer> bids;
+	private SortedMap<Integer, AID> bids;
 	private Integer numAgents;
 	
 	protected void setup(){
@@ -33,7 +34,7 @@ public class ClosedSecondAuctioneer extends Auctioneer{
 	
 	protected void startAuction()
 	{
-		bids = new HashMap<String, Integer>(numAgents);
+		bids = new TreeMap<Integer,AID>();
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         msg.setContent( "Startsecond" );
         for(DFAgentDescription b : buyers)
@@ -41,6 +42,7 @@ public class ClosedSecondAuctioneer extends Auctioneer{
         	msg.addReceiver(b.getName());
         }
         send(msg);
+        receiveBids();
 	}
 	
 	protected void receiveBids()
@@ -52,7 +54,7 @@ public class ClosedSecondAuctioneer extends Auctioneer{
                 ACLMessage msg = receive();
                 if (msg != null)
                 {
-                	bids.put(msg.getSender().getName(), Integer.parseInt(msg.getContent()));
+                	bids.put(Integer.parseInt(msg.getContent()),msg.getSender());
                 	if (bids.size() == numAgents)
                 		getWinner();
                 }
@@ -63,6 +65,12 @@ public class ClosedSecondAuctioneer extends Auctioneer{
 	
 	protected void getWinner()
 	{
-		bids.
+		AID winner = bids.remove(bids.firstKey());
+		Integer price = bids.firstKey();
+		
+		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+        msg.setContent(price.toString());
+        msg.addReceiver(winner);
+        send(msg);
 	}
 }

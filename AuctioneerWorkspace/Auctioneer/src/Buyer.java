@@ -30,7 +30,7 @@ public class Buyer extends Agent{
                 ACLMessage msg = receive();
                 if (msg != null)
                 {
-                    System.out.println( " - " +
+                    System.out.println(" - " +
                        getLocalName() + " <- " +
                        msg.getContent() );
                     
@@ -38,6 +38,7 @@ public class Buyer extends Agent{
                     
                     if (msg.getContent() == "Startsecond")
                     {
+                    	System.out.println("bid made");
                     	ACLMessage bid = new ACLMessage(ACLMessage.INFORM);
                         bid.setContent( "" + maximumPrice );
                         bid.addReceiver(auctioneer);
