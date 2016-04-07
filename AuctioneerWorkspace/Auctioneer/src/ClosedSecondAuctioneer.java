@@ -54,6 +54,13 @@ public class ClosedSecondAuctioneer extends Auctioneer{
                 ACLMessage msg = receive();
                 if (msg != null)
                 {
+                	System.out.println( " - " +
+                            getLocalName() + 
+                            " <- Bid received by " + 
+                			msg.getSender().getLocalName() +
+                			" = " +
+                            msg.getContent() );
+                	
                 	bids.put(Integer.parseInt(msg.getContent()),msg.getSender());
                 	if (bids.size() == numAgents)
                 		getWinner();

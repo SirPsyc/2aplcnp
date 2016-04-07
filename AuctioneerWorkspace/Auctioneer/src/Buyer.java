@@ -1,3 +1,4 @@
+import java.util.Random;
 import jade.core.*;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
@@ -23,22 +24,23 @@ public class Buyer extends Agent{
 	    }
 	    catch (FIPAException fe) { fe.printStackTrace(); }
 	    
+	    Random rand = new Random();
+	    
 	    addBehaviour(new CyclicBehaviour(this) 
         {
              public void action() 
              {
-                ACLMessage msg = receive();
+                ACLMessage msg= receive();
                 if (msg != null)
                 {
-                    System.out.println(" - " +
+                    System.out.println( " - " +
                        getLocalName() + " <- " +
                        msg.getContent() );
                     
                     AID auctioneer = msg.getSender();
                     
-                    if (msg.getContent() == "Startsecond")
+                    if (msg.getContent().equals("Startsecond"))
                     {
-                    	System.out.println("bid made");
                     	ACLMessage bid = new ACLMessage(ACLMessage.INFORM);
                         bid.setContent( "" + maximumPrice );
                         bid.addReceiver(auctioneer);
@@ -46,11 +48,34 @@ public class Buyer extends Agent{
                     }
                     else if (msg.getContent() == "Startenglish")
                     {
-                    	
+                    	int firstBid = rand.nextInt(10) + 1;
+                    	ACLMessage bid = new ACLMessage(ACLMessage.INFORM);
+                        bid.setContent( "" + firstBid );
+                        bid.addReceiver(auctioneer);
+                        send(bid);
                     }
                     else if (msg.getContent() == "Startdutch")
                     {
+                    	ACLMessage bid = new ACLMessage(ACLMessage.INFORM);
+                        bid.setContent( "ready" );
+                        bid.addReceiver(auctioneer);
+                        send(bid);
+                    }
+                    else if (msg.getContent().startsWith("Currentenglish"))
+                    {
                     	
+                    }
+                    else if (msg.getContent().startsWith("Currentdutch"))
+                    {
+                    	
+                    }
+                    else if (msg.getContent() == "Auctionwon")
+                    {
+                    	System.out.println( "NICE!, i won for " /*+ price*/ );
+                    }
+                    else if (msg.getContent() == "Auctionlost")
+                    {
+                    	System.out.println( "THOUSANDS OF BOMBS AND GRENADES!, i lost" );
                     }
                 }
                 block();
