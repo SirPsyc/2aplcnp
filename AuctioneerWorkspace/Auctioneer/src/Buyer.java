@@ -80,7 +80,21 @@ public class Buyer extends Agent{
                     	
                     	if (currentBid < maximumPrice)
                     	{
-                    		int newBid = 
+                    		int newBid = currentBid + rand.nextInt(5) + 1;
+                    		if (newBid < maximumPrice)
+                    		{
+                    			ACLMessage bid = new ACLMessage(ACLMessage.INFORM);
+                                bid.setContent( "" + newBid );
+                                bid.addReceiver(auctioneer);
+                                send(bid);
+                    		}
+                    		else
+                    		{
+                    			ACLMessage bid = new ACLMessage(ACLMessage.INFORM);
+                                bid.setContent( "" + maximumPrice );
+                                bid.addReceiver(auctioneer);
+                                send(bid);
+                    		}
                     	}
                     }
                     //Receiving the current price of the Dutch auction,
@@ -89,7 +103,13 @@ public class Buyer extends Agent{
                     {
                     	int currentPrice = Integer.parseInt(msg.getContent().substring(12));
                     	
-                    	
+                    	if (currentPrice <= maximumPrice)
+                    	{
+                    		ACLMessage agrm = new ACLMessage(ACLMessage.INFORM);
+                            agrm.setContent( "agreed" );
+                            agrm.addReceiver(auctioneer);
+                            send(agrm);
+                    	}
                     }
                     //Receiving message of having won the auction for a certain price,
                     //print out a line saying I WON :D
