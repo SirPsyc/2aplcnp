@@ -96,7 +96,8 @@ public class Buyer extends Agent{
                     	System.out.println( " - " + getLocalName() + " : NICE!, i won for $" + price );
                     }
                 }
-                block();
+                else
+                	block();
              }
         });
 	}
