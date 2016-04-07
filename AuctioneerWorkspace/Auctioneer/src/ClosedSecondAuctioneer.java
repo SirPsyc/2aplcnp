@@ -70,7 +70,7 @@ public class ClosedSecondAuctioneer extends Auctioneer{
 		AID winner = bids.remove(bids.firstKey());
 		Integer price = bids.firstKey();
 		
-		System.out.println("Winner is " + winner.getLocalName().toString() + " for $" + price.toString());
+		//System.out.println("Winner is " + winner.getLocalName().toString() + " for $" + price.toString());
 		
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         msg.setContent("Auctionwon" + price);
