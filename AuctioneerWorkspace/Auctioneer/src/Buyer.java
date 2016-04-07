@@ -111,6 +111,9 @@ public class Buyer extends Agent{
                             agrm.setContent( "agreed" );
                             agrm.addReceiver(auctioneer);
                             send(agrm);
+                            System.out.println( " - " +
+                                    getLocalName() + " : " +
+                            		"Agreed!");
                     	}
                     }
                     //Receiving message of having won the auction for a certain price,

@@ -20,7 +20,7 @@ public class DutchAuctioneer extends Auctioneer{
 			{
 				public void action()
 				{
-					System.out.println("receiving" + ready);
+					//System.out.println("receiving" + ready);
 					ACLMessage msg = receive();
 	                if (msg != null)
 	                {
@@ -48,7 +48,7 @@ public class DutchAuctioneer extends Auctioneer{
 				private AID winner;
 				public void action()
 				{
-					System.out.println("receiving" + ready);
+					//System.out.println("receiving" + ready);
 					ACLMessage msg = receive();
 		            if (msg != null)
 		            {
