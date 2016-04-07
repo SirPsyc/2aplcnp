@@ -1,0 +1,21 @@
+import jade.core.Agent;
+import jade.core.behaviours.*;
+
+public class BookBuyerAgent extends Agent {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String l;
+
+	protected void setup(){
+		System.out.println("HELLO WORLD");
+		Object[] args = getArguments();
+		System.out.println(args[0]);
+		addBehaviour(new WakerBehaviour(this, 10000) {
+			protected void handleElapsedTimeout(){
+				System.out.println("bye");
+			}
+		});
+	}
+}

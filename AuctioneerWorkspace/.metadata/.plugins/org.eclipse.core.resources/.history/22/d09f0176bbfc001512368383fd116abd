@@ -1,0 +1,6 @@
+import jade.core.*;
+
+
+public class ClosedSecondAuctioneer extends Agent{
+
+}

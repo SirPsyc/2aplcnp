@@ -1,0 +1,14 @@
+import jade.core.Agent;
+public class BookBuyerAgent extends Agent {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String l;
+
+	protected void setup(){
+		System.out.println("HELLO WORLD");
+		l = System.console().readLine();
+		System.out.println(l);
+	}
+}

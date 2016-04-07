@@ -1,0 +1,22 @@
+import jade.core.*;
+import jade.domain.DFService;
+import jade.domain.FIPAAgentManagement.*;
+import jade.domain.FIPAException;
+
+public class Auctioneer extends Agent {
+	private DFAgentDescription[] getBuyers(int n){
+		DFAgentDescription dfd = new DFAgentDescription();
+        ServiceDescription sd  = new ServiceDescription();
+        sd.setType( "buyer" );
+        dfd.addServices(sd);
+        
+        DFAgentDescription[] result;
+		try {
+			result = DFService.search(this, dfd);
+		} catch (FIPAException e) {
+			result = [];
+			e.printStackTrace();
+		}
+        return result;
+	}
+}
