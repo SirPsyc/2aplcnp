@@ -36,7 +36,9 @@ public class Buyer extends Agent{
                     
                     AID auctioneer = msg.getSender();
                     
-                    if (msg.getContent() == "Startsecond")
+                    System.out.println(msg.getContent().equals("Startsecond"));
+                    
+                    if (msg.getContent().equals("Startsecond"))
                     {
                     	System.out.println("bid made");
                     	ACLMessage bid = new ACLMessage(ACLMessage.INFORM);

@@ -1,3 +1,4 @@
+import java.util.Collections;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -34,7 +35,8 @@ public class ClosedSecondAuctioneer extends Auctioneer{
 	
 	protected void startAuction()
 	{
-		bids = new TreeMap<Integer,AID>();
+		bids = new TreeMap<Integer,AID>(Collections.reverseOrder());
+        receiveBids();
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         msg.setContent( "Startsecond" );
         for(DFAgentDescription b : buyers)
@@ -42,7 +44,7 @@ public class ClosedSecondAuctioneer extends Auctioneer{
         	msg.addReceiver(b.getName());
         }
         send(msg);
-        receiveBids();
+
 	}
 	
 	protected void receiveBids()
@@ -67,6 +69,8 @@ public class ClosedSecondAuctioneer extends Auctioneer{
 	{
 		AID winner = bids.remove(bids.firstKey());
 		Integer price = bids.firstKey();
+		
+		System.out.println("Winner is " + winner.getName().toString() + " for $" + price.toString());
 		
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         msg.setContent(price.toString());
