@@ -33,9 +33,9 @@ public class Buyer extends Agent{
                 ACLMessage msg= receive();
                 if (msg != null)
                 {
-                    System.out.println( " - " +
+                    /*System.out.println( " - " +
                        getLocalName() + " <- " +
-                       msg.getContent() );
+                       msg.getContent() );*/
                     
                     AID auctioneer = msg.getSender();
                     
@@ -51,7 +51,7 @@ public class Buyer extends Agent{
                                 " sent bid to " +
                                 auctioneer.getLocalName());
                     }
-                    else if (msg.getContent() == "Startenglish")
+                    else if (msg.getContent().equals("Startenglish"))
                     {
                     	int firstBid = rand.nextInt(10) + 1;
                     	ACLMessage bid = new ACLMessage(ACLMessage.INFORM);
@@ -59,7 +59,7 @@ public class Buyer extends Agent{
                         bid.addReceiver(auctioneer);
                         send(bid);
                     }
-                    else if (msg.getContent() == "Startdutch")
+                    else if (msg.getContent().equals("Startdutch"))
                     {
                     	ACLMessage bid = new ACLMessage(ACLMessage.INFORM);
                         bid.setContent( "ready" );
@@ -74,11 +74,12 @@ public class Buyer extends Agent{
                     {
                     	
                     }
-                    else if (msg.getContent() == "Auctionwon")
+                    else if (msg.getContent().startsWith("Auctionwon"))
                     {
-                    	//System.out.println( "NICE!, i won for " /*+ price*/ );
+                    	int price = Integer.parseInt(msg.getContent().substring(10));
+                    	System.out.println( " - " + getLocalName() + " : NICE!, i won for $" + price );
                     }
-                    else if (msg.getContent() == "Auctionlost")
+                    else if (msg.getContent().equals("Auctionlost"))
                     {
                     	//System.out.println( "THOUSANDS OF BOMBS AND GRENADES!, i lost" );
                     }

@@ -36,6 +36,7 @@ public class ClosedSecondAuctioneer extends Auctioneer{
 	protected void startAuction()
 	{
 		bids = new TreeMap<Integer,AID>(Collections.reverseOrder());
+        receiveBids();
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         msg.setContent( "Startsecond" );
         for(DFAgentDescription b : buyers)
@@ -43,7 +44,6 @@ public class ClosedSecondAuctioneer extends Auctioneer{
         	msg.addReceiver(b.getName());
         }
         send(msg);
-        receiveBids();
 	}
 	
 	protected void receiveBids()
@@ -55,18 +55,12 @@ public class ClosedSecondAuctioneer extends Auctioneer{
                 ACLMessage msg = receive();
                 if (msg != null)
                 {
-                	System.out.println( " - " +
-                            getLocalName() + 
-                            " <- Bid received by " + 
-                			msg.getSender().getLocalName() +
-                			" = " +
-                            msg.getContent() );
-                	
                 	bids.put(Integer.parseInt(msg.getContent()),msg.getSender());
                 	if (bids.size() == numAgents)
                 		getWinner();
                 }
-                block();
+                else
+                	block();
              }
         });
 	}
@@ -79,7 +73,7 @@ public class ClosedSecondAuctioneer extends Auctioneer{
 		System.out.println("Winner is " + winner.getLocalName().toString() + " for $" + price.toString());
 		
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-        msg.setContent(price.toString());
+        msg.setContent("Auctionwon" + price);
         msg.addReceiver(winner);
         send(msg);
 	}
